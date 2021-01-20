@@ -17,7 +17,7 @@ import (
 //Pedido sadasd
 ///Estructura del Pedido
 type Pedido struct {
-	PedidoID        uint       `json:"oderdId" gorm:"primary_key"`
+	PedidoID        uint       `json:"pedidoId" gorm:"autoIncrement;primary_key"`
 	VendedorNombre  string     `json:"vendedorNombre"`
 	FechaSolicitado time.Time  `json:"fechaSolicitado"`
 	Productos       []Producto `json:"productos" gorm:"foreignkey:PedidoID"`
@@ -25,7 +25,7 @@ type Pedido struct {
 
 //Producto estructura
 type Producto struct {
-	ProductoID     uint   `json:"lineItemId" gorm:"primary_key"`
+	ProductoID     uint   `json:"lineItemId" gorm:"autoIncrement;primary_key"`
 	ProductoCodigo string `json:"productoCodigo"`
 	Descripcion    string `json:"descripcion"`
 	Cantidad       uint   `json:"cantidad"`
@@ -92,6 +92,7 @@ func updatePedido(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(updatedPedido)
 }
+
 func deletePedido(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	pedidoID := params["id"]
@@ -104,6 +105,7 @@ func deletePedido(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNoContent)
 
 }
+
 func main() {
 	router := mux.NewRouter()
 	//Get Pedios
