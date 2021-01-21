@@ -29,7 +29,7 @@ type Producto struct {
 	ProductoCodigo string `json:"productoCodigo"`
 	Descripcion    string `json:"descripcion"`
 	Cantidad       uint   `json:"cantidad"`
-	PedidoID       uint   `json:"-"`
+	PedidoID       uint   `json:"pedidoId"`
 }
 
 //////Base de datos
@@ -72,16 +72,6 @@ func getPedido(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func createPedido(w http.ResponseWriter, r *http.Request) {
-	var pedido Pedido
-
-	json.NewDecoder(r.Body).Decode(&pedido)
-	db.Create(&pedido)
-
-	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(pedido)
-}
-
 func updatePedido(w http.ResponseWriter, r *http.Request) {
 	var updatedPedido Pedido
 
@@ -106,6 +96,27 @@ func deletePedido(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func createPedido(w http.ResponseWriter, r *http.Request) {
+	var pedido Pedido
+
+	json.NewDecoder(r.Body).Decode(&pedido)
+	db.Create(&pedido)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(pedido)
+}
+
+func addProductoPedido(w http.ResponseWriter, r *http.Request) {
+	var producto Producto
+	json.NewDecoder(r.Body).Decode(&producto)
+	db.Create(&producto)
+
+	w.Header().Set("Content-Type", "application-json")
+
+	json.NewEncoder(w).Encode(producto)
+
+}
+
 func main() {
 	router := mux.NewRouter()
 	//Get Pedios
@@ -114,6 +125,8 @@ func main() {
 	router.HandleFunc("/api/pedido", createPedido).Methods("POST")
 	router.HandleFunc("/api/pedido/{id}", updatePedido).Methods("PUT")
 	router.HandleFunc("/api/pedido/{id}", deletePedido).Methods("DELETE")
+
+	router.HandleFunc("/api/pedido/producto", addProductoPedido).Methods("POST")
 
 	initDB()
 	port := ":8080"
